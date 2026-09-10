@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="https://mausoleumpoetrywrench.com/ec/dc/f7/ecdcf717fd44cf041eac0fc98fcb3e91.js"></script>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Freebook Video Feed</title>
+
+<style>
+*{box-sizing:border-box; margin:0; padding:0;}
+body{background-color:#f0f2f5; color:#050505; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;}
+button,input{font:inherit;}
+a{text-decoration:none; color:inherit;}
+
+/* ====== Updated Top Navigation Bar ====== */
+.topbar {
+  background: #ffffff;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  padding: 8px 16px 0 16px;
+}
+
+/* Top Row: Logo & Action Buttons */
+.top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 8px;
+}
+
+.fb-brand {
+  color: #1877f2;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -1.2px;
+  font-family: Arial, Helvetica, sans-serif;
+  text-decoration: none;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #e4e6eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+  border: none;
+  outline: none;
+}
+
+.icon-btn:hover { background: #d8dadf; }
+.icon-btn svg { width: 22px; height: 22px; fill: #050505; }
+
+/* Bottom Row: Navigation Tabs */
+.bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.nav-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #65676b;
+  cursor: pointer;
+  height: 48px;
+  border-bottom: 3px solid transparent;
+  transition: background 0.2s;
+}
+
+.nav-tab:hover { background-color: #f2f2f2; border-radius: 8px 8px 0 0; }
+
+.nav-tab.active {
+  color: #1877f2;
+  border-bottom-color: #1877f2;
+}
+
+.icon-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-tab svg {
+  width: 26px;
+  height: 26px;
+}
+
+.nav-tab .filled-icon { fill: currentColor; }
+.nav-tab .outline-icon {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Notification Badges */
+.badge {
+  position: absolute;
+  top: -4px;
+  right: -8px;
+  background: #e41e3f;
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 2px 5px;
+  border-radius: 12px;
+  border: 2px solid #fff;
+  line-height: 1;
+}
+
+/* Main Grid Layout */
+main{max-width:1200px; margin:16px auto; padding:0 12px;}
+.video-grid{display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:16px; align-items:start;}
+
+/* Premium Post Card */
+.post-card{background:#ffffff; border-radius:8px; box-shadow:0 1px 2px rgba(0,0,0,0.2); overflow:hidden; display:flex; flex-direction:column;}
+
+/* Post Header */
+.post-header{padding:12px 16px; display:flex; align-items:center; gap:10px;}
+.author-pic{width:40px; height:40px; border-radius:50%; object-fit:cover;}
+.author-info{flex:1;}
+.author-name{font-size:15px; font-weight:600; color:#050505; display:block; line-height:1.2;}
+.post-time{font-size:13px; color:#65676b; display:flex; align-items:center; gap:4px; margin-top:2px;}
+.more-options{color:#65676b; font-weight:bold; cursor:pointer; font-size:18px;}
+
+/* Video Thumbnail Area */
+.video-thumbnail{width:100%; aspect-ratio:16/9; background:#000; position:relative; display:block; overflow:hidden;}
+.video-thumbnail img{width:100%; height:100%; object-fit:cover; opacity:0.95; transition:transform 0.2s, opacity 0.2s;}
+.video-thumbnail:hover img{opacity:1; transform:scale(1.01);}
+.play-btn{position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); width:54px; height:54px; background:rgba(0,0,0,0.65); border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid #fff;}
+.play-btn::after{content:''; display:block; border-left:14px solid #fff; border-top:9px solid transparent; border-bottom:9px solid transparent; margin-left:4px;}
+
+/* Like & Comment Counts */
+.stats-row{display:flex; justify-content:space-between; align-items:center; padding:8px 16px; color:#65676b; font-size:13px; border-bottom:1px solid #e4e6eb;}
+.reaction-icons{display:flex; align-items:center;}
+.reaction-circle{width:18px; height:18px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; color:#fff; font-size:10px; border:1px solid #fff;}
+.bg-blue{background:#1877f2; z-index:2;}
+.bg-red{background:#fa383e; margin-left:-4px; z-index:1;}
+.count-text{margin-left:6px;}
+
+/* Facebook Action Buttons */
+.action-buttons{display:flex; justify-content:space-between; padding:3px 8px;}
+.action-btn{flex:1; display:flex; align-items:center; justify-content:center; gap:6px; height:34px; background:transparent; border:none; border-radius:4px; color:#65676b; font-weight:600; font-size:14px; cursor:pointer; transition:background 0.2s;}
+.action-btn:hover{background:#f2f2f2; color:#1877f2;}
+.action-btn svg{width:18px; height:18px; fill:#65676b; transition:fill 0.2s;}
+.action-btn:hover svg{fill:#1877f2;}
+
+/* Ad Container */
+.ad-container{width:100%; border-top:1px solid #e4e6eb; background:#f9f9f9; display:flex; justify-content:center; align-items:center; padding:8px 0; min-height:90px; overflow:hidden;}
+
+/* Responsive Layout */
+@media(max-width:992px){
+    .video-grid{grid-template-columns:repeat(2, minmax(0, 1fr));}
+}
+@media(max-width:600px){
+    .topbar { padding: 8px 8px 0 8px; }
+    .fb-brand { font-size: 24px; }
+    .icon-btn { width: 36px; height: 36px; }
+    .video-grid{grid-template-columns:1fr; gap:12px;}
+    main{margin:8px auto; padding:0 6px;}
+    .post-card{border-radius:6px;}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <!-- Top Row: Logo & Icons -->
+  <div class="top-row">
+    <a href="#" class="fb-brand">Freebook</a>
+    <div class="header-actions">
+      <!-- Create (+) Button -->
+      <button class="icon-btn" title="Create">
+        <svg viewBox="0 0 24 24"><path d="M19 11h-6V5h-2v6H5v2h6v6h2v-6h6z"/></svg>
+      </button>
+      <!-- Search Button -->
+      <button class="icon-btn" title="Search">
+        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      </button>
+      <!-- Menu Button -->
+      <button class="icon-btn" title="Menu">
+        <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Bottom Row: Navigation Tabs -->
+  <nav class="bottom-row">
+    <!-- Home -->
+    <a href="#" class="nav-tab active" title="Home">
+      <div class="icon-wrapper">
+        <svg viewBox="0 0 24 24" class="filled-icon"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <span class="badge">15+</span>
+      </div>
+    </a>
+    <!-- Friends -->
+    <a href="#" class="nav-tab" title="Friends">
+      <div class="icon-wrapper">
+        <svg viewBox="0 0 24 24" class="outline-icon">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+      </div>
+    </a>
+    <!-- Messenger -->
+    <a href="#" class="nav-tab" title="Messenger">
+      <div class="icon-wrapper">
+        <svg viewBox="0 0 24 24" class="outline-icon">
+          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+        </svg>
+        <span class="badge">1</span>
+      </div>
+    </a>
+    <!-- Watch Video -->
+    <a href="#" class="nav-tab" title="Watch Video">
+      <div class="icon-wrapper">
+        <svg viewBox="0 0 24 24" class="outline-icon">
+          <rect x="2" y="6" width="20" height="12" rx="2" ry="2"></rect>
+          <polygon points="10 9 15 12 10 15 10 9"></polygon>
+        </svg>
+      </div>
+    </a>
+    <!-- Notifications -->
+    <a href="#" class="nav-tab" title="Notifications">
+      <div class="icon-wrapper">
+        <svg viewBox="0 0 24 24" class="outline-icon">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg>
+        <span class="badge">1</span>
+      </div>
+    </a>
+    <!-- Marketplace -->
+    <a href="#" class="nav-tab" title="Marketplace">
+      <div class="icon-wrapper">
+        <svg viewBox="0 0 24 24" class="outline-icon">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        </svg>
+      </div>
+    </a>
+  </nav>
+</header>
+
+<main>
+  <div class="video-grid">
+    
+    <!-- Post 1 (Native Banner Below) -->
+    <div class="post-card">
+      <div class="post-header">
+        <img src="https://i.pravatar.cc/100?img=1" class="author-pic" alt="Author">
+        <div class="author-info">
+          <span class="author-name">Trending Clip</span>
+          <span class="post-time">2 hrs · 🌎</span>
+        </div>
+        <div class="more-options">•••</div>
+      </div>
+      <a class="video-thumbnail" href="https://mausoleumpoetrywrench.com/qm2bfkj2r7?key=f97c6736793213589b44d0baf6b637a5
+">
+        <img src="images/1.jpg" alt="Video 1">
+        <div class="play-btn"></div>
+      </a>
+      <div class="stats-row">
+        <div class="reaction-icons">
+          <span class="reaction-circle bg-blue">👍</span>
+          <span class="reaction-circle bg-red">❤️</span>
+          <span class="count-text">3.2K</span>
+        </div>
+        <div>142 Comments</div>
+      </div>
+      <div class="action-buttons">
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg> Like</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Comment</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg> Share</button>
+      </div>
+      <div class="ad-container">
+          <script async="async" data-cfasync="false" src="https://mausoleumpoetrywrench.com/884befbeeccd5f90dc3ac878ee6e48b3/invoke.js"></script>
+<div id="container-884befbeeccd5f90dc3ac878ee6e48b3"></div>
+
+      </div>
+    </div>
+
+    <!-- Post 2 (No Ad) -->
+    <div class="post-card">
+      <div class="post-header">
+        <img src="https://i.pravatar.cc/100?img=2" class="author-pic" alt="Author">
+        <div class="author-info"><span class="author-name">Fun Media</span><span class="post-time">4 hrs · 🌎</span></div>
+        <div class="more-options">•••</div>
+      </div>
+      <a class="video-thumbnail" href="https://mausoleumpoetrywrench.com/qm2bfkj2r7?key=f97c6736793213589b44d0baf6b637a5
+">
+        <img src="images/2.jpg" alt="Video 2"><div class="play-btn"></div>
+      </a>
+      <div class="stats-row"><div class="reaction-icons"><span class="reaction-circle bg-blue">👍</span><span class="count-text">1.8K</span></div><div>89 Comments</div></div>
+      <div class="action-buttons">
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg> Like</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Comment</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg> Share</button>
+      </div>
+    </div>
+
+    <!-- Post 3 (728x90 Banner Ad) -->
+    <div class="post-card">
+      <div class="post-header">
+        <img src="https://i.pravatar.cc/100?img=3" class="author-pic" alt="Author">
+        <div class="author-info"><span class="author-name">Daily World</span><span class="post-time">6 hrs · 🌎</span></div>
+        <div class="more-options">•••</div>
+      </div>
+      <a class="video-thumbnail" href="https://mausoleumpoetrywrench.com/qm2bfkj2r7?key=f97c6736793213589b44d0baf6b637a5
+">
+        <img src="images/3.jpg" alt="Video 3"><div class="play-btn"></div>
+      </a>
+      <div class="stats-row"><div class="reaction-icons"><span class="reaction-circle bg-blue">👍</span><span class="reaction-circle bg-red">❤️</span><span class="count-text">4.5K</span></div><div>301 Comments</div></div>
+      <div class="action-buttons">
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg> Like</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Comment</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg> Share</button>
+      </div>
+      <div class="ad-container">
+         <script>
+  atOptions = {
+    'key' : 'd633d00743340608515a5ab0bac9263e',
+    'format' : 'iframe',
+    'height' : 90,
+    'width' : 728,
+    'params' : {}
+  };
+</script>
+<script src="https://mausoleumpoetrywrench.com/d633d00743340608515a5ab0bac9263e/invoke.js"></script>
+      </div>
+    </div>
+
+    <!-- Post 4 (No Ad) -->
+    <div class="post-card">
+      <div class="post-header">
+        <img src="https://i.pravatar.cc/100?img=4" class="author-pic" alt="Author">
+        <div class="author-info"><span class="author-name">Viral Hub</span><span class="post-time">8 hrs · 🌎</span></div>
+        <div class="more-options">•••</div>
+      </div>
+      <a class="video-thumbnail" href="https://mausoleumpoetrywrench.com/qm2bfkj2r7?key=f97c6736793213589b44d0baf6b637a5
+">
+        <img src="images/4.jpg" alt="Video 4"><div class="play-btn"></div>
+      </a>
+      <div class="stats-row"><div class="reaction-icons"><span class="reaction-circle bg-blue">👍</span><span class="count-text">980</span></div><div>45 Comments</div></div>
+      <div class="action-buttons">
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg> Like</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Comment</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg> Share</button>
+      </div>
+    </div>
+
+    <!-- Post 5 (728x90 Banner Ad) -->
+    <div class="post-card">
+      <div class="post-header">
+        <img src="https://i.pravatar.cc/100?img=5" class="author-pic" alt="Author">
+        <div class="author-info"><span class="author-name">Cinema Zone</span><span class="post-time">10 hrs · 🌎</span></div>
+        <div class="more-options">•••</div>
+      </div>
+      <a class="video-thumbnail" href="https://mausoleumpoetrywrench.com/qm2bfkj2r7?key=f97c6736793213589b44d0baf6b637a5
+">
+        <img src="images/5.jpg" alt="Video 5"><div class="play-btn"></div>
+      </a>
+      <div class="stats-row"><div class="reaction-icons"><span class="reaction-circle bg-blue">👍</span><span class="reaction-circle bg-red">❤️</span><span class="count-text">5.1K</span></div><div>210 Comments</div></div>
+      <div class="action-buttons">
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg> Like</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Comment</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg> Share</button>
+      </div>
+      <div class="ad-container">
+         <script>
+  atOptions = {
+    'key' : 'd633d00743340608515a5ab0bac9263e',
+    'format' : 'iframe',
+    'height' : 90,
+    'width' : 728,
+    'params' : {}
+  };
+</script>
+<script src="https://mausoleumpoetrywrench.com/d633d00743340608515a5ab0bac9263e/invoke.js"></script>
+      </div>
+    </div>
+
+    <!-- Post 6 (No Ad) -->
+    <div class="post-card">
+      <div class="post-header">
+        <img src="https://i.pravatar.cc/100?img=6" class="author-pic" alt="Author">
+        <div class="author-info"><span class="author-name">Tech Feed</span><span class="post-time">12 hrs · 🌎</span></div>
+        <div class="more-options">•••</div>
+      </div>
+      <a class="video-thumbnail" href="https://mausoleumpoetrywrench.com/qm2bfkj2r7?key=f97c6736793213589b44d0baf6b637a5
+">
+        <img src="images/6.jpg" alt="Video 6"><div class="play-btn"></div>
+      </a>
+      <div class="stats-row"><div class="reaction-icons"><span class="reaction-circle bg-blue">👍</span><span class="count-text">1.2K</span></div><div>33 Comments</div></div>
+      <div class="action-buttons">
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg> Like</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Comment</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg> Share</button>
+      </div>
+    </div>
+
+    <!-- Post 7 (728x90 Banner Ad) -->
+    <div class="post-card">
+      <div class="post-header">
+        <img src="https://i.pravatar.cc/100?img=7" class="author-pic" alt="Author">
+        <div class="author-info"><span class="author-name">Sports Highlight</span><span class="post-time">14 hrs · 🌎</span></div>
+        <div class="more-options">•••</div>
+      </div>
+      <a class="video-thumbnail" href="https://mausoleumpoetrywrench.com/qm2bfkj2r7?key=f97c6736793213589b44d0baf6b637a5
+">
+        <img src="images/7.jpg" alt="Video 7"><div class="play-btn"></div>
+      </a>
+      <div class="stats-row"><div class="reaction-icons"><span class="reaction-circle bg-blue">👍</span><span class="reaction-circle bg-red">❤️</span><span class="count-text">2.9K</span></div><div>180 Comments</div></div>
+      <div class="action-buttons">
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg> Like</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Comment</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg> Share</button>
+      </div>
+      <div class="ad-container">
+          <script>
+  atOptions = {
+    'key' : 'd633d00743340608515a5ab0bac9263e',
+    'format' : 'iframe',
+    'height' : 90,
+    'width' : 728,
+    'params' : {}
+  };
+</script>
+<script src="https://mausoleumpoetrywrench.com/d633d00743340608515a5ab0bac9263e/invoke.js"></script>
+      </div>
+    </div>
+
+    <!-- Post 8 (No Ad) -->
+    <div class="post-card">
+      <div class="post-header">
+        <img src="https://i.pravatar.cc/100?img=8" class="author-pic" alt="Author">
+        <div class="author-info"><span class="author-name">Music Beats</span><span class="post-time">16 hrs · 🌎</span></div>
+        <div class="more-options">•••</div>
+      </div>
+      <a class="video-thumbnail" href="https://mausoleumpoetrywrench.com/qm2bfkj2r7?key=f97c6736793213589b44d0baf6b637a5
+">
+        <img src="images/8.jpg" alt="Video 8"><div class="play-btn"></div>
+      </a>
+      <div class="stats-row"><div class="reaction-icons"><span class="reaction-circle bg-blue">👍</span><span class="count-text">1.1K</span></div><div>52 Comments</div></div>
+      <div class="action-buttons">
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg> Like</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Comment</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg> Share</button>
+      </div>
+    </div>
+
+    <!-- Post 9 (728x90 Banner Ad) -->
+    <div class="post-card">
+      <div class="post-header">
+        <img src="https://i.pravatar.cc/100?img=9" class="author-pic" alt="Author">
+        <div class="author-info"><span class="author-name">Travel Diaries</span><span class="post-time">18 hrs · 🌎</span></div>
+        <div class="more-options">•••</div>
+      </div>
+      <a class="video-thumbnail" href="https://mausoleumpoetrywrench.com/qm2bfkj2r7?key=f97c6736793213589b44d0baf6b637a5
+">
+        <img src="images/9.jpg" alt="Video 9"><div class="play-btn"></div>
+      </a>
+      <div class="stats-row"><div class="reaction-icons"><span class="reaction-circle bg-blue">👍</span><span class="reaction-circle bg-red">❤️</span><span class="count-text">3.8K</span></div><div>195 Comments</div></div>
+      <div class="action-buttons">
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg> Like</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Comment</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg> Share</button>
+      </div>
+      <div class="ad-container">
+         <script>
+  atOptions = {
+    'key' : 'd633d00743340608515a5ab0bac9263e',
+    'format' : 'iframe',
+    'height' : 90,
+    'width' : 728,
+    'params' : {}
+  };
+</script>
+<script src="https://mausoleumpoetrywrench.com/d633d00743340608515a5ab0bac9263e/invoke.js"></script>
+      </div>
+    </div>
+
+    <!-- Post 10 (No Ad) -->
+    <div class="post-card">
+      <div class="post-header">
+        <img src="https://i.pravatar.cc/100?img=10" class="author-pic" alt="Author">
+        <div class="author-info"><span class="author-name">Nature Life</span><span class="post-time">20 hrs · 🌎</span></div>
+        <div class="more-options">•••</div>
+      </div>
+      <a class="video-thumbnail" href="https://mausoleumpoetrywrench.com/qm2bfkj2r7?key=f97c6736793213589b44d0baf6b637a5
+">
+        <img src="images/10.jpg" alt="Video 10"><div class="play-btn"></div>
+      </a>
+      <div class="stats-row"><div class="reaction-icons"><span class="reaction-circle bg-blue">👍</span><span class="count-text">850</span></div><div>22 Comments</div></div>
+      <div class="action-buttons">
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg> Like</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Comment</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg> Share</button>
+      </div>
+    </div>
+
+    <!-- Post 11 (728x90 Banner Ad) -->
+    <div class="post-card">
+      <div class="post-header">
+        <img src="https://i.pravatar.cc/100?img=11" class="author-pic" alt="Author">
+        <div class="author-info"><span class="author-name">Gaming World</span><span class="post-time">1 day ago · 🌎</span></div>
+        <div class="more-options">•••</div>
+      </div>
+      <a class="video-thumbnail" href="https://mausoleumpoetrywrench.com/qm2bfkj2r7?key=f97c6736793213589b44d0baf6b637a5
+">
+        <img src="images/11.jpg" alt="Video 11"><div class="play-btn"></div>
+      </a>
+      <div class="stats-row"><div class="reaction-icons"><span class="reaction-circle bg-blue">👍</span><span class="reaction-circle bg-red">❤️</span><span class="count-text">6.4K</span></div><div>412 Comments</div></div>
+      <div class="action-buttons">
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg> Like</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Comment</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg> Share</button>
+      </div>
+      <div class="ad-container">
+          <script>
+  atOptions = {
+    'key' : 'd633d00743340608515a5ab0bac9263e',
+    'format' : 'iframe',
+    'height' : 90,
+    'width' : 728,
+    'params' : {}
+  };
+</script>
+<script src="https://mausoleumpoetrywrench.com/d633d00743340608515a5ab0bac9263e/invoke.js"></script>
+      </div>
+    </div>
+
+    <!-- Post 12 (No Ad) -->
+    <div class="post-card">
+      <div class="post-header">
+        <img src="https://i.pravatar.cc/100?img=13" class="author-pic" alt="Author">
+        <div class="author-info"><span class="author-name">Foodie Express</span><span class="post-time">1 day ago · 🌎</span></div>
+        <div class="more-options">•••</div>
+      </div>
+      <a class="video-thumbnail" href="https://mausoleumpoetrywrench.com/qm2bfkj2r7?key=f97c6736793213589b44d0baf6b637a5
+">
+        <img src="images/12.jpg" alt="Video 12"><div class="play-btn"></div>
+      </a>
+      <div class="stats-row"><div class="reaction-icons"><span class="reaction-circle bg-blue">👍</span><span class="count-text">1.7K</span></div><div>64 Comments</div></div>
+      <div class="action-buttons">
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg> Like</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Comment</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg> Share</button>
+      </div>
+    </div>
+
+    <!-- Post 13 (728x90 Banner Ad) -->
+    <div class="post-card">
+      <div class="post-header">
+        <img src="https://i.pravatar.cc/100?img=14" class="author-pic" alt="Author">
+        <div class="author-info"><span class="author-name">Fitness Motivation</span><span class="post-time">2 days ago · 🌎</span></div>
+        <div class="more-options">•••</div>
+      </div>
+      <a class="video-thumbnail" href="https://mausoleumpoetrywrench.com/qm2bfkj2r7?key=f97c6736793213589b44d0baf6b637a5
+">
+        <img src="images/13.jpg" alt="Video 13"><div class="play-btn"></div>
+      </a>
+      <div class="stats-row"><div class="reaction-icons"><span class="reaction-circle bg-blue">👍</span><span class="reaction-circle bg-red">❤️</span><span class="count-text">2.3K</span></div><div>88 Comments</div></div>
+      <div class="action-buttons">
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg> Like</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Comment</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg> Share</button>
+      </div>
+      <div class="ad-container">
+          <script>
+  atOptions = {
+    'key' : 'd633d00743340608515a5ab0bac9263e',
+    'format' : 'iframe',
+    'height' : 90,
+    'width' : 728,
+    'params' : {}
+  };
+</script>
+<script src="https://mausoleumpoetrywrench.com/d633d00743340608515a5ab0bac9263e/invoke.js"></script>
+      </div>
+    </div>
+
+    <!-- Post 14 (No Ad) -->
+    <div class="post-card">
+      <div class="post-header">
+        <img src="https://i.pravatar.cc/100?img=15" class="author-pic" alt="Author">
+        <div class="author-info"><span class="author-name">Auto Reviews</span><span class="post-time">2 days ago · 🌎</span></div>
+        <div class="more-options">•••</div>
+      </div>
+      <a class="video-thumbnail" href="https://mausoleumpoetrywrench.com/qm2bfkj2r7?key=f97c6736793213589b44d0baf6b637a5
+">
+        <img src="images/14.jpg" alt="Video 14"><div class="play-btn"></div>
+      </a>
+      <div class="stats-row"><div class="reaction-icons"><span class="reaction-circle bg-blue">👍</span><span class="count-text">1.4K</span></div><div>49 Comments</div></div>
+      <div class="action-buttons">
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg> Like</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Comment</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg> Share</button>
+      </div>
+    </div>
+
+    <!-- Post 15 (728x90 Banner Ad) -->
+    <div class="post-card">
+      <div class="post-header">
+        <img src="https://i.pravatar.cc/100?img=16" class="author-pic" alt="Author">
+        <div class="author-info"><span class="author-name">Science Today</span><span class="post-time">3 days ago · 🌎</span></div>
+        <div class="more-options">•••</div>
+      </div>
+      <a class="video-thumbnail" href="https://mausoleumpoetrywrench.com/qm2bfkj2r7?key=f97c6736793213589b44d0baf6b637a5
+">
+        <img src="images/15.jpg" alt="Video 15"><div class="play-btn"></div>
+      </a>
+      <div class="stats-row"><div class="reaction-icons"><span class="reaction-circle bg-blue">👍</span><span class="reaction-circle bg-red">❤️</span><span class="count-text">4.1K</span></div><div>130 Comments</div></div>
+      <div class="action-buttons">
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg> Like</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Comment</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg> Share</button>
+      </div>
+      <div class="ad-container">
+          <script>
+  atOptions = {
+    'key' : 'd633d00743340608515a5ab0bac9263e',
+    'format' : 'iframe',
+    'height' : 90,
+    'width' : 728,
+    'params' : {}
+  };
+</script>
+<script src="https://mausoleumpoetrywrench.com/d633d00743340608515a5ab0bac9263e/invoke.js"></script>
+      </div>
+    </div>
+
+    <!-- Post 16 (No Ad) -->
+    <div class="post-card">
+      <div class="post-header">
+        <img src="https://i.pravatar.cc/100?img=17" class="author-pic" alt="Author">
+        <div class="author-info"><span class="author-name">Animal Kingdom</span><span class="post-time">3 days ago · 🌎</span></div>
+        <div class="more-options">•••</div>
+      </div>
+      <a class="video-thumbnail" href="https://mausoleumpoetrywrench.com/qm2bfkj2r7?key=f97c6736793213589b44d0baf6b637a5
+">
+        <img src="images/16.jpg" alt="Video 16"><div class="play-btn"></div>
+      </a>
+      <div class="stats-row"><div class="reaction-icons"><span class="reaction-circle bg-blue">👍</span><span class="count-text">2.0K</span></div><div>78 Comments</div></div>
+      <div class="action-buttons">
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg> Like</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Comment</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg> Share</button>
+      </div>
+    </div>
+
+    <!-- Post 17 (728x90 Banner Ad) -->
+    <div class="post-card">
+      <div class="post-header">
+        <img src="https://i.pravatar.cc/100?img=18" class="author-pic" alt="Author">
+        <div class="author-info"><span class="author-name">Top Viral</span><span class="post-time">4 days ago · 🌎</span></div>
+        <div class="more-options">•••</div>
+      </div>
+      <a class="video-thumbnail" href="https://mausoleumpoetrywrench.com/qm2bfkj2r7?key=f97c6736793213589b44d0baf6b637a5
+">
+        <img src="images/17.jpg" alt="Video 17"><div class="play-btn"></div>
+      </a>
+      <div class="stats-row"><div class="reaction-icons"><span class="reaction-circle bg-blue">👍</span><span class="reaction-circle bg-red">❤️</span><span class="count-text">3.5K</span></div><div>115 Comments</div></div>
+      <div class="action-buttons">
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg> Like</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Comment</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg> Share</button>
+      </div>
+      <div class="ad-container">
+          <script>
+  atOptions = {
+    'key' : 'd633d00743340608515a5ab0bac9263e',
+    'format' : 'iframe',
+    'height' : 90,
+    'width' : 728,
+    'params' : {}
+  };
+</script>
+<script src="https://mausoleumpoetrywrench.com/d633d00743340608515a5ab0bac9263e/invoke.js"></script>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://mausoleumpoetrywrench.com/8d/f5/96/8df596b8282169c2a1a260ef674c3209.js"></script>
+</body>
+</html>
