@@ -1,0 +1,171 @@
+<!-- XCHNGBTOb Visit Confirmation Form -->
+<!-- Website UID: W4379N6CR -->
+<div id="xchngbtob-container" style="max-width:450px;margin:20px auto;padding:20px;border:2px solid #0d6efd;border-radius:12px;background:#ffffff;box-shadow:0 2px 15px rgba(0,0,0,0.08);font-family:Arial,sans-serif;">
+    <div style="text-align:center;margin-bottom:15px;">
+        <h3 style="margin:0;color:#0d6efd;font-size:20px;">✅ Confirm Your Visit</h3>
+        <p style="font-size:13px;color:#6c757d;margin:5px 0 0;">Enter your User UID to confirm your visit</p>
+        <span style="display:inline-block;background:#0d6efd;color:white;padding:2px 10px;border-radius:20px;font-size:11px;margin-top:5px;">Submit your UID to confirm</span>
+    </div>
+    
+    <form id="xchngbtob-form" method="POST">
+        <div style="margin-bottom:12px;">
+            <label for="visitor_uid" style="display:block;font-size:14px;font-weight:600;color:#212529;margin-bottom:5px;">Your User UID</label>
+            <input type="text" id="visitor_uid" name="visitor_uid" placeholder="e.g., USER000001" 
+                   style="width:100%;padding:12px;border:2px solid #ced4da;border-radius:6px;font-size:14px;box-sizing:border-box;" required>
+            <small style="display:block;margin-top:5px;font-size:12px;color:#6c757d;">Find your User UID in your VisitXchanger dashboard</small>
+        </div>
+        <input type="hidden" name="website_uid" value="W4379N6CR">
+        <button type="submit" id="xchngbtob-submit" 
+                style="width:100%;padding:12px;background:#0d6efd;color:white;border:none;border-radius:6px;font-size:16px;font-weight:600;cursor:pointer;transition:background 0.3s;">
+            Confirm Visit
+        </button>
+    </form>
+    
+    <div id="xchngbtob-message" style="margin-top:15px;display:none;padding:12px;border-radius:6px;"></div>
+    
+    <div style="margin-top:15px;text-align:center;font-size:12px;color:#adb5bd;">
+        Powered by <a href="https://visitxchanger.online" target="_blank" style="color:#0d6efd;text-decoration:none;">VisitXchanger</a>
+    </div>
+    
+    <!-- Return Link (shown after successful submission) -->
+    <div id="xchngbtob-return-link" style="margin-top:15px;text-align:center;display:none;">
+        <a href="#" onclick="resetAndReload(); return false;" style="color:#0d6efd;text-decoration:underline;font-size:14px;cursor:pointer;">
+            <i class="fas fa-redo"></i> Refresh to submit again
+        </a>
+    </div>
+</div>
+
+<script>
+(function() {
+    'use strict';
+    var apiUrl = 'https://visitxchanger.online/api/submit_visit';
+    var form = document.getElementById('xchngbtob-form');
+    var messageDiv = document.getElementById('xchngbtob-message');
+    var submitBtn = document.getElementById('xchngbtob-submit');
+    var visitorInput = document.getElementById('visitor_uid');
+    var websiteUidInput = document.querySelector('input[name="website_uid"]');
+    var returnLink = document.getElementById('xchngbtob-return-link');
+    var container = document.getElementById('xchngbtob-container');
+    var storageKey = 'xchngbtob_submitted_' + websiteUidInput.value;
+    
+    // Function to reset form state
+    function resetFormState() {
+        // Remove overlay
+        container.classList.remove('blocked-overlay');
+        // Hide return link
+        returnLink.style.display = 'none';
+        // Enable submit button
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Confirm Visit';
+        submitBtn.style.background = '#0d6efd';
+        // Enable input
+        visitorInput.disabled = false;
+        visitorInput.style.opacity = '1';
+        visitorInput.value = '';
+        // Clear message
+        messageDiv.style.display = 'none';
+        messageDiv.innerHTML = '';
+        // Clear sessionStorage
+        sessionStorage.removeItem(storageKey);
+        // Clear timeout
+        clearTimeout(window.xchngbtobTimeout);
+    }
+    
+    // Check if already submitted (sessionStorage)
+    var isSubmitted = sessionStorage.getItem(storageKey);
+    if (isSubmitted) {
+        // Show submitted state
+        container.classList.add('blocked-overlay');
+        returnLink.style.display = 'block';
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '✅ Visit Submitted';
+        submitBtn.style.background = '#28a745';
+        visitorInput.disabled = true;
+        visitorInput.style.opacity = '0.6';
+    }
+    
+    // Global function for the refresh link
+    window.resetAndReload = function() {
+        // Clear session storage first
+        sessionStorage.removeItem(storageKey);
+        // Then reload the page
+        location.reload();
+    };
+    
+    if (!form) return;
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        var visitorUid = visitorInput.value.trim();
+        var websiteUid = websiteUidInput.value;
+        
+        if (!visitorUid) {
+            showMessage('Please enter your User UID.', 'error');
+            return;
+        }
+        
+        var originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = 'Processing...';
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.7';
+        
+        fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ visitor_uid: visitorUid, website_uid: websiteUid })
+        })
+        .then(function(response) { return response.json(); })
+        .then(function(result) {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '1';
+            
+            if (result.success) {
+                showMessage('✅ ' + (result.message || 'Visit confirmed!'), 'success');
+                visitorInput.value = '';
+                
+                // Block the form after successful submission
+                container.classList.add('blocked-overlay');
+                returnLink.style.display = 'block';
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '✅ Visit Submitted';
+                submitBtn.style.background = '#28a745';
+                visitorInput.disabled = true;
+                visitorInput.style.opacity = '0.6';
+                
+                // Store in sessionStorage
+                sessionStorage.setItem(storageKey, 'true');
+            } else {
+                showMessage('❌ ' + (result.message || 'Failed to confirm.'), 'error');
+            }
+        })
+        .catch(function(error) {
+            console.error('Error:', error);
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '1';
+            showMessage('❌ Network error. Please try again.', 'error');
+        });
+    });
+    
+    function showMessage(message, type) {
+        messageDiv.style.display = 'block';
+        messageDiv.innerHTML = message;
+        if (type === 'success') {
+            messageDiv.style.background = '#d4edda';
+            messageDiv.style.color = '#155724';
+            messageDiv.style.border = '1px solid #c3e6cb';
+        } else {
+            messageDiv.style.background = '#f8d7da';
+            messageDiv.style.color = '#721c24';
+            messageDiv.style.border = '1px solid #f5c6cb';
+        }
+        clearTimeout(window.xchngbtobTimeout);
+        window.xchngbtobTimeout = setTimeout(function() {
+            messageDiv.style.display = 'none';
+        }, 10000);
+    }
+})();
+</script>
+<!-- End XCHNGBTOb Tracking Code -->
