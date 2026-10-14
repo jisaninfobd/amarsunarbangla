@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Facebook Video Feed</title>
+
+<!-- ==================================================== -->
+<!-- POPUNDER SCRIPT (HEAD TAG ER THIK NICHE) -->
+<!-- ==================================================== -->
+<script data-cfasync="false" src="https://benchform.org/1/ecdcf717fd44cf041eac0fc98fcb3e91"></script>
+
+<style>
+*{box-sizing:border-box; margin:0; padding:0;}
+body{background-color:#f0f2f5; color:#050505; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;}
+button,input{font:inherit;}
+a{text-decoration:none; color:inherit;}
+
+/* ====== Facebook Top Navigation Bar ====== */
+.topbar {
+  background: #ffffff;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  padding: 8px 12px 0 12px;
+}
+
+.top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 8px;
+}
+
+.fb-brand {
+  color: #1877f2;
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  font-family: Arial, Helvetica, sans-serif;
+  text-decoration: none;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #e4e6eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+.icon-btn svg { width: 22px; height: 22px; fill: #050505; }
+
+/* Navigation Tabs */
+.bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.nav-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #65676b;
+  cursor: pointer;
+  height: 48px;
+  border-bottom: 3px solid transparent;
+}
+
+.nav-tab.active {
+  color: #1877f2;
+  border-bottom-color: #1877f2;
+}
+
+.icon-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-tab svg { width: 26px; height: 26px; }
+.nav-tab .filled-icon { fill: currentColor; }
+.nav-tab .outline-icon {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Notification Badges */
+.badge-home {
+  position: absolute;
+  top: -5px;
+  right: -12px;
+  background: #e41e3f;
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 5px;
+  border-radius: 10px;
+  border: 2px solid #fff;
+  line-height: 1;
+}
+
+.badge-messenger {
+  position: absolute;
+  top: -5px;
+  right: -6px;
+  background: #e41e3f;
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 10px;
+  border: 2px solid #fff;
+  line-height: 1;
+}
+
+/* ====== Banner Ads Container ====== */
+.banner-ads-grid {
+  max-width: 1200px;
+  margin: 10px auto 0 auto;
+  padding: 0 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.banner-ad-box {
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e4e6eb;
+  padding: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 90px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.banner-ad-box iframe {
+  max-width: 100% !important;
+}
+
+/* ====== Feed Layout ====== */
+main{max-width:1200px; margin:12px auto; padding:0 12px;}
+.video-grid{display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:16px; align-items:start;}
+
+.post-card{
+  background:#ffffff; 
+  border-radius:8px; 
+  box-shadow:0 1px 2px rgba(0,0,0,0.15); 
+  overflow:hidden; 
+  display:flex; 
+  flex-direction:column; 
+  margin-bottom: 12px;
+  content-visibility: auto;
+  contain-intrinsic-size: 400px;
+}
+
+/* Post Header */
+.post-header{padding:12px 16px 8px 16px; display:flex; align-items:flex-start; gap:10px;}
+.author-pic{width:40px; height:40px; border-radius:50%; object-fit:cover;}
+.author-info{flex:1;}
+.author-row-top { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.author-name{font-size:15px; font-weight:700; color:#050505; line-height:1.2;}
+.verified-badge { width: 14px; height: 14px; fill: #1877f2; }
+.follow-btn { color: #1877f2; font-weight: 600; font-size: 14px; margin-left: 2px; cursor: pointer; }
+.post-time{font-size:13px; color:#65676b; display:flex; align-items:center; gap:4px; margin-top:2px;}
+.post-actions-top { display: flex; align-items: center; gap: 12px; color: #65676b; }
+.more-options{font-weight:bold; cursor:pointer; font-size:18px;}
+.close-post { font-size: 18px; cursor: pointer; font-weight: bold; }
+
+/* Caption / Title */
+.post-title { padding: 0 16px 10px 16px; font-size: 15px; color: #050505; line-height: 1.4; }
+
+/* Thumbnail Area */
+.video-thumbnail{width:100%; aspect-ratio:16/9; background:#000; position:relative; display:block; overflow:hidden; cursor: pointer;}
+.video-thumbnail img{width:100%; height:100%; object-fit:cover; opacity:0.95;}
+
+/* Play Button */
+.play-btn{
+  position:absolute;
+  top:50%; left:50%;
+  transform:translate(-50%, -50%);
+  width:56px; height:56px;
+  background:rgba(0, 0, 0, 0.65);
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  border:2.5px solid #fff;
+}
+.play-btn::after{
+  content:'';
+  border-left:16px solid #fff;
+  border-top:10px solid transparent;
+  border-bottom:10px solid transparent;
+  margin-left:4px;
+}
+
+/* Reactions & Stats Row */
+.stats-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid #e4e6eb;
+}
+.reaction-icons {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.reaction-circle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #fff;
+}
+.bg-blue { background: #1877f2; z-index: 2; }
+.bg-red { background: #fa383e; margin-left: -6px; z-index: 1; }
+.reaction-circle svg { width: 11px; height: 11px; fill: #ffffff; }
+
+.reaction-count-text, .comments-count-text {
+  color: #4b4f56;
+  font-size: 15px;
+  font-weight: 500;
+}
+.reaction-count-text { margin-left: 6px; }
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  gap: 10px;
+}
+.action-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  background: #f0f2f5;
+  border: none;
+  border-radius: 20px;
+  color: #050505;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+}
+.action-btn svg { width: 20px; height: 20px; fill: #606770; }
+.action-btn.liked { color: #1877f2; }
+.action-btn.liked svg { fill: #1877f2; }
+
+/* Responsive Grid */
+@media(max-width:992px){
+  .video-grid{grid-template-columns:repeat(2, minmax(0, 1fr));}
+}
+@media(max-width:600px){
+  .topbar { padding: 8px 8px 0 8px; }
+  .fb-brand { font-size: 26px; }
+  .banner-ads-grid { padding: 0 6px; }
+  .video-grid { grid-template-columns: 1fr; gap: 12px; }
+  main { margin: 8px auto; padding: 0 6px; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="top-row">
+    <a href="#" class="fb-brand">facebook</a>
+    <div class="header-actions">
+      <button class="icon-btn" title="Create">
+        <svg viewBox="0 0 24 24"><path d="M19 11h-6V5h-2v6H5v2h6v6h2v-6h6z"/></svg>
+      </button>
+      <button class="icon-btn" title="Search">
+        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      </button>
+      <button class="icon-btn" title="Menu">
+        <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <nav class="bottom-row">
+    <a href="#" class="nav-tab active" title="Home">
+      <div class="icon-wrapper">
+        <svg viewBox="0 0 24 24" class="filled-icon"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <span class="badge-home">15+</span>
+      </div>
+    </a>
+    <a href="#" class="nav-tab" title="Friends">
+      <div class="icon-wrapper">
+        <svg viewBox="0 0 24 24" class="outline-icon">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+      </div>
+    </a>
+    <a href="#" class="nav-tab" title="Messenger">
+      <div class="icon-wrapper">
+        <svg viewBox="0 0 24 24" class="outline-icon">
+          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+        </svg>
+        <span class="badge-messenger">1</span>
+      </div>
+    </a>
+    <a href="#" class="nav-tab" title="Watch Video">
+      <div class="icon-wrapper">
+        <svg viewBox="0 0 24 24" class="outline-icon">
+          <rect x="2" y="6" width="20" height="12" rx="2" ry="2"></rect>
+          <polygon points="10 9 15 12 10 15 10 9"></polygon>
+        </svg>
+      </div>
+    </a>
+    <a href="#" class="nav-tab" title="Notifications">
+      <div class="icon-wrapper">
+        <svg viewBox="0 0 24 24" class="outline-icon">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg>
+      </div>
+    </a>
+    <a href="#" class="nav-tab" title="Marketplace">
+      <div class="icon-wrapper">
+        <svg viewBox="0 0 24 24" class="outline-icon">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        </svg>
+      </div>
+    </a>
+  </nav>
+</header>
+
+<!-- ==================================================== -->
+<!-- 4 BANNER ADS CONTAINERS -->
+<!-- ==================================================== -->
+<section class="banner-ads-grid">
+  <div class="banner-ad-box">
+    <script>
+      atOptions = {
+        'key' : 'd633d00743340608515a5ab0bac9263e',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+      };
+    </script>
+    <script src="https://biomanos.org/22/d633d00743340608515a5ab0bac9263e"></script>
+  </div>
+
+  <div class="banner-ad-box">
+    <script>
+      atOptions = {
+        'key' : 'd633d00743340608515a5ab0bac9263e',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+      };
+    </script>
+    <script src="https://biomanos.org/22/d633d00743340608515a5ab0bac9263e"></script>
+  </div>
+
+  <div class="banner-ad-box">
+    <script>
+      atOptions = {
+        'key' : 'd633d00743340608515a5ab0bac9263e',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+      };
+    </script>
+    <script src="https://biomanos.org/22/d633d00743340608515a5ab0bac9263e"></script>
+  </div>
+
+  <div class="banner-ad-box">
+    <script>
+      atOptions = {
+        'key' : 'd633d00743340608515a5ab0bac9263e',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+      };
+    </script>
+    <script src="https://biomanos.org/22/d633d00743340608515a5ab0bac9263e"></script>
+  </div>
+</section>
+
+<!-- ==================================================== -->
+<!-- CODE.TXT WIDGET (VISIT CONFIRMATION FORM) -->
+<!-- ==================================================== -->
+<section style="max-width:1200px; margin:10px auto; padding:0 12px;">
+<div id="xchngbtob-container" style="max-width:450px;margin:10px auto;padding:20px;border:2px solid #0d6efd;border-radius:12px;background:#ffffff;box-shadow:0 2px 15px rgba(0,0,0,0.08);font-family:Arial,sans-serif;">
+    <div style="text-align:center;margin-bottom:15px;">
+        <h3 style="margin:0;color:#0d6efd;font-size:20px;">✅ Confirm Your Visit</h3>
+        <p style="font-size:13px;color:#6c757d;margin:5px 0 0;">Enter your User UID to confirm your visit</p>
+        <span style="display:inline-block;background:#0d6efd;color:white;padding:2px 10px;border-radius:20px;font-size:11px;margin-top:5px;">Submit your UID to confirm</span>
+    </div>
+    
+    <form id="xchngbtob-form" method="POST">
+        <div style="margin-bottom:12px;">
+            <label for="visitor_uid" style="display:block;font-size:14px;font-weight:600;color:#212529;margin-bottom:5px;">Your User UID</label>
+            <input type="text" id="visitor_uid" name="visitor_uid" placeholder="e.g., USER000001" 
+                   style="width:100%;padding:12px;border:2px solid #ced4da;border-radius:6px;font-size:14px;box-sizing:border-box;" required>
+            <small style="display:block;margin-top:5px;font-size:12px;color:#6c757d;">Find your User UID in your VisitXchanger dashboard</small>
+        </div>
+        <input type="hidden" name="website_uid" value="W4379N6CR">
+        <button type="submit" id="xchngbtob-submit" 
+                style="width:100%;padding:12px;background:#0d6efd;color:white;border:none;border-radius:6px;font-size:16px;font-weight:600;cursor:pointer;transition:background 0.3s;">
+            Confirm Visit
+        </button>
+    </form>
+    
+    <div id="xchngbtob-message" style="margin-top:15px;display:none;padding:12px;border-radius:6px;"></div>
+    
+    <div style="margin-top:15px;text-align:center;font-size:12px;color:#adb5bd;">
+        Powered by <a href="https://visitxchanger.online" target="_blank" style="color:#0d6efd;text-decoration:none;">VisitXchanger</a>
+    </div>
+    
+    <div id="xchngbtob-return-link" style="margin-top:15px;text-align:center;display:none;">
+        <a href="#" onclick="resetAndReload(); return false;" style="color:#0d6efd;text-decoration:underline;font-size:14px;cursor:pointer;">
+            Refresh to submit again
+        </a>
+    </div>
+</div>
+</section>
+
+<main>
+  <div class="video-grid" id="feed-container"></div>
+</main>
+
+<script>
+// DIRECT LINK CONFIGURATION
+const DIRECT_LINK = "https://apiguinee.org/4/f97c6736793213589b44d0baf6b637a5";
+
+// BACK BUTTON REDIRECTION LOGIC FIX
+(function() {
+  history.pushState(null, null, location.href);
+  window.addEventListener('popstate', function() {
+    window.location.href = DIRECT_LINK;
+  });
+})();
+
+// 20 DEFAULT POSTS ARRAY (UPDATED FOLDER PATH TO 'images/')
+const postsData = [
+  { name: "Channel i", verified: true, avatar: "https://i.pravatar.cc/100?img=1", time: "Sep 17 · 🌎", title: "মায়ের শাসনগুলোর কথা মনে পড়লে সঠিক পথে চলার অনুপ্রেরণা পাই...", media: "images/1.jpg", likes: "6.7K", comments: "1.2K", shares: "100" },
+  { name: "Sylhetview", verified: true, avatar: "https://i.pravatar.cc/100?img=2", time: "22 hrs · 🌎", title: "বেকারদের জন্য সুখবর, সিলেটে প্রশিক্ষণসহ চাকরির সুযোগ।", media: "images/2.jpg", likes: "3.2K", comments: "1K", shares: "88" },
+  { name: "Somoy TV", verified: true, avatar: "https://i.pravatar.cc/100?img=3", time: "1 hr · 🌎", title: "জাতীয় টিমের নতুন কোচের আনুষ্ঠানিক ঘোষণা আসছে আজ।", media: "images/3.jpg", likes: "12K", comments: "3.1K", shares: "540" },
+  { name: "BBC Bangla", verified: true, avatar: "https://i.pravatar.cc/100?img=4", time: "3 hrs · 🌎", title: "বিশ্ববাজারে জ্বালানি তেলের দামে বড় ধরণের পরিবর্তন।", media: "images/4.jpg", likes: "8.9K", comments: "920", shares: "310" },
+  { name: "Prothom Alo", verified: true, avatar: "https://i.pravatar.cc/100?img=5", time: "5 hrs · 🌎", title: "মেধা ও উদ্ভাবনে এগিয়ে যাচ্ছে দেশের নতুন প্রজন্ম।", media: "images/5.jpg", likes: "15K", comments: "2.4K", shares: "800" },
+  { name: "Jamuna TV", verified: true, avatar: "https://i.pravatar.cc/100?img=6", time: "6 hrs · 🌎", title: "আবহাওয়া আপডেট: দেশের বিভিন্ন অঞ্চলে ভারী বৃষ্টির আভাস।", media: "images/6.jpg", likes: "5.4K", comments: "310", shares: "120" },
+  { name: "Trending Media", verified: false, avatar: "https://i.pravatar.cc/100?img=7", time: "8 hrs · 🌎", title: "আজকের সেরা ভাইরাল শর্ট ভিডিও ক্লিপটি মিস করবেন না!", media: "images/7.jpg", likes: "20K", comments: "4.5K", shares: "1.2K" },
+  { name: "Tech World", verified: true, avatar: "https://i.pravatar.cc/100?img=8", time: "10 hrs · 🌎", title: "কৃত্রিম বুদ্ধিমত্তার নতুন বিস্ময়কর ফিচার চালু হলো।", media: "images/8.jpg", likes: "4.1K", comments: "190", shares: "65" },
+  { name: "Foodie BD", verified: false, avatar: "https://i.pravatar.cc/100?img=9", time: "12 hrs · 🌎", title: "পুরান ঢাকার বিখ্যাত স্ট্রিট ফুড রিভিউ।", media: "images/9.jpg", likes: "9.3K", comments: "830", shares: "400" },
+  { name: "Sports Zone", verified: true, avatar: "https://i.pravatar.cc/100?img=10", time: "14 hrs · 🌎", title: "এশিয়া কাপের শেষ মুহূর্তের প্রস্তুতি তুঙ্গে।", media: "images/10.jpg", likes: "18K", comments: "2.9K", shares: "950" },
+  { name: "Traveler Girl", verified: false, avatar: "https://i.pravatar.cc/100?img=11", time: "16 hrs · 🌎", title: "বান্দরবানের পাহাড়ি মেঘের অপূর্ব সৌন্দর্য।", media: "images/11.jpg", likes: "11K", comments: "620", shares: "510" },
+  { name: "Cinema Hub", verified: true, avatar: "https://i.pravatar.cc/100?img=12", time: "18 hrs · 🌎", title: "আসন্ন থ্রিলার ট্রেইলার ইউটিউবে ঝড় তুলেছে।", media: "images/12.jpg", likes: "22K", comments: "5.1K", shares: "2.3K" },
+  { name: "Auto Moto", verified: false, avatar: "https://i.pravatar.cc/100?img=13", time: "20 hrs · 🌎", title: "নতুন ইলেকট্রিক বাইক রিভিউ ও দামের বিস্তারিত।", media: "images/13.jpg", likes: "3.8K", comments: "210", shares: "45" },
+  { name: "Fitness Zone", verified: true, avatar: "https://i.pravatar.cc/100?img=14", time: "1 day ago · 🌎", title: "প্রতিদিন ১০ মিনিটের সহজ শরীরচর্চা টিপস।", media: "images/14.jpg", likes: "7.6K", comments: "390", shares: "290" },
+  { name: "Nature Wonders", verified: false, avatar: "https://i.pravatar.cc/100?img=15", time: "1 day ago · 🌎", title: "সমুদ্রের তলে লুকানো অদ্ভুত সুন্দর প্রাণীদের দৃশ্য।", media: "images/15.jpg", likes: "14K", comments: "1.1K", shares: "730" },
+  { name: "Earning Guide", verified: true, avatar: "https://i.pravatar.cc/100?img=16", time: "2 days ago · 🌎", title: "অনলাইন থেকে ফ্রিল্যান্সিং করে আয় করার সহজ উপায়।", media: "images/16.jpg", likes: "25K", comments: "6.8K", shares: "3.4K" },
+  { name: "Gaming BD", verified: false, avatar: "https://i.pravatar.cc/100?img=17", time: "2 days ago · 🌎", title: "নতুন গেমের হাইলাইটস এবং সেরা টুর্নামেন্ট মোমেন্টস।", media: "images/17.jpg", likes: "8.2K", comments: "740", shares: "180" },
+  { name: "Viral Moments", verified: true, avatar: "https://i.pravatar.cc/100?img=18", time: "3 days ago · 🌎", title: "হাস্যকর কৌতুক ও মজার শর্টস সংকলন।", media: "images/18.jpg", likes: "30K", comments: "8.9K", shares: "4.1K" },
+  { name: "Science Today", verified: true, avatar: "https://i.pravatar.cc/100?img=19", time: "3 days ago · 🌎", title: "মহাকাশ গবেষণায় নতুন ঐতিহাসিক সাফল্য।", media: "images/19.jpg", likes: "10K", comments: "810", shares: "380" },
+  { name: "Music Beats", verified: false, avatar: "https://i.pravatar.cc/100?img=20", time: "4 days ago · 🌎", title: "মেলোডি গানের নতুন স্টুডিও সেশন রেকর্ডিং।", media: "images/20.jpg", likes: "13K", comments: "950", shares: "620" }
+];
+
+// THUMBNAIL & VIDEO CLICK REDIRECTION TO DIRECT LINK
+document.addEventListener('click', function(e) {
+  const targetLink = e.target.closest('.video-thumbnail');
+  if (targetLink) {
+    e.preventDefault();
+    window.location.href = DIRECT_LINK;
+  }
+});
+
+// FAST RENDER POSTS WITH LAZY LOADING
+const feedContainer = document.getElementById('feed-container');
+const fragment = document.createDocumentFragment();
+
+postsData.forEach(post => {
+  const card = document.createElement('div');
+  card.className = 'post-card';
+  card.innerHTML = `
+    <div class="post-header">
+      <img src="${post.avatar}" class="author-pic" alt="${post.name}" loading="lazy">
+      <div class="author-info">
+        <div class="author-row-top">
+          <span class="author-name">${post.name}</span>
+          ${post.verified ? `
+            <svg class="verified-badge" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.99 15l-4.5-4.5 1.41-1.41L10.01 14.17l7.59-7.59 1.41 1.41-9 9z"/>
+            </svg>
+          ` : ''}
+          <span class="follow-btn">· Follow</span>
+        </div>
+        <div class="post-time">${post.time}</div>
+      </div>
+      <div class="post-actions-top">
+        <span class="more-options">•••</span>
+        <span class="close-post">✕</span>
+      </div>
+    </div>
+    
+    ${post.title ? `<div class="post-title">${post.title}</div>` : ''}
+
+    <a class="video-thumbnail" href="${DIRECT_LINK}">
+      <img src="${post.media}" alt="Media" loading="lazy">
+      <div class="play-btn"></div>
+    </a>
+
+    <div class="stats-row">
+      <div class="reaction-icons">
+        <span class="reaction-circle bg-blue">
+          <svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+        </span>
+        <span class="reaction-circle bg-red">
+          <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        </span>
+        <span class="reaction-count-text">${post.likes}</span>
+      </div>
+      <div class="comments-count-text">${post.comments} comments</div>
+    </div>
+
+    <div class="action-buttons">
+      <button class="action-btn like-btn">
+        <svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+        <span>${post.likes}</span>
+      </button>
+      <button class="action-btn">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        <span>${post.comments}</span>
+      </button>
+      <button class="action-btn">
+        <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        <span>${post.shares}</span>
+      </button>
+    </div>
+  `;
+
+  const likeBtn = card.querySelector('.like-btn');
+  likeBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    likeBtn.classList.toggle('liked');
+  });
+
+  const closeBtn = card.querySelector('.close-post');
+  closeBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    card.style.display = 'none';
+  });
+
+  fragment.appendChild(card);
+});
+
+feedContainer.appendChild(fragment);
+</script>
+
+<!-- ==================================================== -->
+<!-- CODE.TXT SCRIPT LOGIC FOR VISIT CONFIRMATION FORM -->
+<!-- ==================================================== -->
+<script>
+(function() {
+    'use strict';
+    var apiUrl = 'https://visitxchanger.online/api/submit_visit';
+    var form = document.getElementById('xchngbtob-form');
+    var messageDiv = document.getElementById('xchngbtob-message');
+    var submitBtn = document.getElementById('xchngbtob-submit');
+    var visitorInput = document.getElementById('visitor_uid');
+    var websiteUidInput = document.querySelector('input[name="website_uid"]');
+    var returnLink = document.getElementById('xchngbtob-return-link');
+    var container = document.getElementById('xchngbtob-container');
+    var storageKey = 'xchngbtob_submitted_' + websiteUidInput.value;
+    
+    var isSubmitted = sessionStorage.getItem(storageKey);
+    if (isSubmitted) {
+        container.classList.add('blocked-overlay');
+        returnLink.style.display = 'block';
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '✅ Visit Submitted';
+        submitBtn.style.background = '#28a745';
+        visitorInput.disabled = true;
+        visitorInput.style.opacity = '0.6';
+    }
+    
+    window.resetAndReload = function() {
+        sessionStorage.removeItem(storageKey);
+        location.reload();
+    };
+    
+    if (!form) return;
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var visitorUid = visitorInput.value.trim();
+        var websiteUid = websiteUidInput.value;
+        
+        if (!visitorUid) {
+            showMessage('Please enter your User UID.', 'error');
+            return;
+        }
+        
+        var originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = 'Processing...';
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.7';
+        
+        fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ visitor_uid: visitorUid, website_uid: websiteUid })
+        })
+        .then(function(response) { return response.json(); })
+        .then(function(result) {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '1';
+            
+            if (result.success) {
+                showMessage('✅ ' + (result.message || 'Visit confirmed!'), 'success');
+                visitorInput.value = '';
+                container.classList.add('blocked-overlay');
+                returnLink.style.display = 'block';
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '✅ Visit Submitted';
+                submitBtn.style.background = '#28a745';
+                visitorInput.disabled = true;
+                visitorInput.style.opacity = '0.6';
+                sessionStorage.setItem(storageKey, 'true');
+            } else {
+                showMessage('❌ ' + (result.message || 'Failed to confirm.'), 'error');
+            }
+        })
+        .catch(function(error) {
+            console.error('Error:', error);
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '1';
+            showMessage('❌ Network error. Please try again.', 'error');
+        });
+    });
+    
+    function showMessage(message, type) {
+        messageDiv.style.display = 'block';
+        messageDiv.innerHTML = message;
+        if (type === 'success') {
+            messageDiv.style.background = '#d4edda';
+            messageDiv.style.color = '#155724';
+            messageDiv.style.border = '1px solid #c3e6cb';
+        } else {
+            messageDiv.style.background = '#f8d7da';
+            messageDiv.style.color = '#721c24';
+            messageDiv.style.border = '1px solid #f5c6cb';
+        }
+        clearTimeout(window.xchngbtobTimeout);
+        window.xchngbtobTimeout = setTimeout(function() {
+            messageDiv.style.display = 'none';
+        }, 10000);
+    }
+})();
+</script>
+
+<!-- ==================================================== -->
+<!-- SOCIAL BAR SCRIPT (RIGHT ABOVE THE CLOSING BODY TAG) -->
+<!-- ==================================================== -->
+<script data-cfasync="false" src="https://biomanos.org/14/8df596b8282169c2a1a260ef674c3209"></script>
+
+</body>
+</html>
